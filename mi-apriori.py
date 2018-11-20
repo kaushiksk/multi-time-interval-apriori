@@ -25,6 +25,18 @@ def get_interval(timestamp):
 		if timestamp > interval[0] and timestamp <= interval[1]:
 			return interval
 
+def get_interval_index(interval):
+	"""Returns the index of the interval according to the 
+	list of intervals"""
+
+	for idx, reference in enumerate(TIME_INTERVALS):
+		if interval[0] == reference[0] and interval[1] == reference[1]:
+			return idx
+
+	return -1
+
+
+
 def time2str(intervals=TIME_INTERVALS):
 	time2str_map = dict()
 	for i, interval in enumerate(TIME_INTERVALS):
