@@ -144,13 +144,12 @@ def joinCk(k1, k2):
         return []
 
     list_of_sequences = []
-    items = []
-    items += k1.items
-    items += k2.items[-1]
 
-    intervals = []
-    intervals += copy(k1.intervals)
-    intervals += copy(k2.intervals[-1])
+    items = copy(k1.items)
+    items.append(k2.items[-1])
+
+    intervals = copy(k1.intervals)
+    intervals.append(copy(k2.intervals[-1]))
 
     T_1_kminus1 = k1.intervals[-1][0]
     T_kminus1_k = k2.intervals[-1][-1]
