@@ -2,7 +2,7 @@
 Implements the multi time interval apriori algorithm
 """
 
-TIME_INTERVALS = [[0,0], [0,3], [3,6], [6, 100]]
+TIME_INTERVALS = [(0,0), ( 0,3 ), ( 3,6 ), ( 6, 100 )]
 INTERVAL_2_STR = time2str(TIME_INTERVALS)
 MIN_SUP = 0.75
 DB = None
@@ -16,6 +16,14 @@ class Sequence:
 		self.intervals = intervals
 		self.length = len(items)
 
+    def __eq__(self, other):
+        """Equality operator overloading for Sequence class
+        """
+
+        return self.length == other.length and self.items == other.items
+           and self.intervals == other.intervals
+
+
 
 def get_interval(timestamp):
 	"""Returns interval corresponding to given timestamp"""
@@ -26,7 +34,7 @@ def get_interval(timestamp):
 			return interval
 
 def get_interval_index(interval):
-	"""Returns the index of the interval according to the 
+	"""Returns the index of the interval according to the
 	list of intervals"""
 
 	for idx, reference in enumerate(TIME_INTERVALS):
@@ -57,7 +65,7 @@ def make_table(ti, show=False):
 			for t in ti:
 				low = t[0]
 				high = t[1]
-				
+
 				if not (high <= l or low >= r):
 					table[i][j].append(t)
 
@@ -66,7 +74,7 @@ def make_table(ti, show=False):
 			for j in range(len(ti)):
 				for t in table[i][j]:
 					print t,
-				print 'break', 
+				print 'break',
 				print '\t',
 			print '\n'
 
@@ -102,7 +110,7 @@ def generate_one_itemsets(db=DB):
 	one_itemsets = filter(lambda x: one_item_support(x) >= MIN_SUP, unique_items)
 
 	return one_itemsets
-		
+
 
 
 
