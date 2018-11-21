@@ -1,12 +1,73 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # File              : apriori_utils.py
-# Author            : Kaushik S Kalmady
+# Author            : Kaushik S Kalmady, Siddharth V
 # Date              : 11.11.2018
-# Last Modified Date: 19.11.2018
+# Last Modified Date: 21.11.2018
 # Last Modified By  : Kaushik S Kalmady
 
 from copy import copy
+from interval import get_interval, get_interval_index
+
+class multiTimeIntervalSequence:
+    """A multi time interval sequence"""
+
+    def __init__(self, items, intervals):
+        self.items = items
+        self.intervals = intervals
+        self.length = len(items)
+
+    def __eq__(self, other):
+        """Equality operator overloading for Sequence class
+        """
+
+        return self.length == other.length and self.items == other.items \
+               and self.intervals == other.intervals
+
+
+def one_item_support(item, db):
+    """Returns support of item in DB
+    This is equal to number of rows containing atleast one tuple with item
+    divided by total number of rows"""
+
+    item_in_rows = 0.0
+    num_rows = len(db)
+
+    for row in db:
+        if len(filter(lambda x: x[0] == item, row)) > 0:
+            item_in_rows += 1
+
+    return item_in_rows/num_rows
+
+
+def support(sequence, db):
+    """Returns support of multiTimeIntervalSequence sequence in db
+    This is equal to number of rows containing sequence
+    divided by total number of rows"""
+    item_in_rows = 0.0
+    num_rows = len(db)
+
+    for row in db:
+        if contains(row, sequence):
+            item_in_rows += 1
+
+    return item_in_rows/num_rows
+
+
+def generate_one_itemsets(db, min_sup):
+    """Generates one itemsets from a database of data sequences containing
+    (item, timestamp) tuples"""
+
+
+    unique_items = set()
+
+    for row in db:
+        for item, timestamp in row:
+            unique_items.add(item)
+
+    one_itemsets = filter(lambda x: one_item_support(x) >= min_sup, unique_items)
+
+    return one_itemsets
 
 
 def contains(transaction, sequence):
@@ -130,13 +191,15 @@ def joinable(k1, k2):
     return True
 
 
-def joinCk(k1, k2):
+def joinCk(k1, k2, timeIntervalMatrix):
     """ Joins two k-multi-time-interval sequences and returns a
     k+1-multi-time-interval sequence
 
     Arguments:
         k1: k-multi-time-interval
         k2: Another k-multi-time-interval
+        timeIntervalMatrix: Time interval matrix constructed using 
+        time intervals defined
     """
 
 
@@ -161,23 +224,24 @@ def joinCk(k1, k2):
         i, j = j, i
 
     # Descending Property + Time Interval Matrix Property
-    for interval in TIME_INTERVAL_MATRIX[i][j]:
+    for interval in timeIntervalMatrix[i][j]:
         # T_1_k should be >= T_2_k
         if get_interval_index(interval) >= get_interval_index(intervals[-1][0]):
             t_intervals = copy(intervals)
             t_intervals[-1].insert(0, interval)
 
-            list_of_sequences.append(Sequence(items, t_intervals))
+            list_of_sequences.append(multiTimeIntervalSequence(items, t_intervals))
 
     return list_of_sequences
 
 
-def joinC2(one_itemsets):
+def joinC2(one_itemsets, time_intervals):
     """ Joins 1-multi-time-interval sequences with itself and returns a
     2-multi-time-interval sequence
 
     Arguments:
         one_itemsets: frequent one itemsets from the DB
+        time_intervals: time intervals defined
     """
 
     list_of_sequences = []
@@ -186,9 +250,12 @@ def joinC2(one_itemsets):
         for item_2 in one_itemsets:
             t_items = [item_1, item_2]
 
-            for interval in TIME_INTERVALS:
+            for interval in time_intervals:
                 t_intervals = [[interval]]
-                list_of_sequences.append(Sequence(t_items, t_intervals))
+                list_of_sequences.append(multiTimeIntervalSequence(t_items, t_intervals))
 
     return list_of_sequences
 
+
+if __name__=="__main__":
+    print "Done"
