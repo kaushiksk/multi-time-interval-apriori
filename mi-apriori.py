@@ -10,7 +10,7 @@
 Implements the multi time interval apriori algorithm
 """
 
-from interval import make_table, TIME_INTERVALS
+from interval import make_table
 from apriori_utils import joinC2, joinCk, contains, generate_one_itemsets
 from apriori_utils import support, one_item_support
 from apriori_utils import run_apriori
