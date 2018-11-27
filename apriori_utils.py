@@ -40,20 +40,6 @@ def one_item_support(item, db):
     return item_in_rows/num_rows
 
 
-def support(sequence, db):
-    """Returns support of multiTimeIntervalSequence sequence in db
-    This is equal to number of rows containing sequence
-    divided by total number of rows"""
-    item_in_rows = 0.0
-    num_rows = len(db)
-
-    for row in db:
-        if contains(row, sequence):
-            item_in_rows += 1
-
-    return item_in_rows/num_rows
-
-
 def generate_one_itemsets(db, min_sup):
     """Generates one itemsets from a database of data sequences containing
     (item, timestamp) tuples"""
@@ -198,13 +184,9 @@ def joinCk(k1, k2, timeIntervalMatrix):
     Arguments:
         k1: k-multi-time-interval
         k2: Another k-multi-time-interval
-        timeIntervalMatrix: Time interval matrix constructed using 
+        timeIntervalMatrix: Time interval matrix constructed using
         time intervals defined
     """
-
-
-    if not joinable(k1, k2):
-        return []
 
     list_of_sequences = []
 
@@ -305,49 +287,6 @@ def prune(sequence_list):
 
     return pruned_sequence_list
 
-
-
-def run_apriori(db, time_intervals, max_sequence_length, min_sup):
-    """Stub function to run the apriori algorithm. Returns the list of frequent
-    sequences with the number of lists is equal to the max_sequence_length specified
-
-    Arguments:
-        db: Database as a list of transaction(which is a list of tuples)
-        time_intervals: List of time_intervals tuples
-        max_sequence_length: Maximum multiTimeIntervalSequence length 
-        min_sup: Minimum support
-    """
-
-
-    generate_one_itemsets(db, min_sup)
-
-    frequent_sequences = []
-
-    if max_sequence_length < 1:
-        return frequent_sequences
-
-    frequent_sequences.append([multiTimeIntervalSequence([item], []) for item in one_itemsets])
-
-    if max_sequence_length == 1:
-        return frequent_sequences
-    
-    for i in range(2, max_sequence_length+1):
-        longest_sequence_list_yet = frequent_sequences[-1]
-        current_sequence_list = []
-
-        if i == 2:
-            current_sequence_list = joinC2(one_itemsets, time_intervals)
-
-        else:
-            for sequence_1 in longest_sequence_list_yet:
-                for sequence_2 in longest_sequence_list_yet:
-                    current_sequence_list.append(joinCk(sequence_1, sequence_2, time_intervals))
-
-        current_sequence_list_with_sup = [sequence for sequence in current_sequence_list if support(sequence) >= min_sup]
-
-        frequent_sequences.append(current_sequence_list_with_sup)
-
-    return frequent_sequences
 
 
 if __name__=="__main__":
