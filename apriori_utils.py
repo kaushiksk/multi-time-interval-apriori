@@ -40,20 +40,6 @@ def one_item_support(item, db):
     return item_in_rows/num_rows
 
 
-def support(sequence, db):
-    """Returns support of multiTimeIntervalSequence sequence in db
-    This is equal to number of rows containing sequence
-    divided by total number of rows"""
-    item_in_rows = 0.0
-    num_rows = len(db)
-
-    for row in db:
-        if contains(row, sequence):
-            item_in_rows += 1
-
-    return item_in_rows/num_rows
-
-
 def generate_one_itemsets(db, min_sup):
     """Generates one itemsets from a database of data sequences containing
     (item, timestamp) tuples"""
@@ -198,7 +184,7 @@ def joinCk(k1, k2, timeIntervalMatrix):
     Arguments:
         k1: k-multi-time-interval
         k2: Another k-multi-time-interval
-        timeIntervalMatrix: Time interval matrix constructed using 
+        timeIntervalMatrix: Time interval matrix constructed using
         time intervals defined
     """
 
