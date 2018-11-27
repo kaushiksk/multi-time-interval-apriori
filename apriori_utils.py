@@ -256,6 +256,56 @@ def joinC2(one_itemsets, time_intervals):
 
     return list_of_sequences
 
+def sub_sequence(sequence, i):
+    """ Returns the (k-1)sub_sequence of the give (k)multiTimeIntervalSequence when 
+    the ith item and the corresponding time intervals are removed 
+
+    Arguments:
+        sequence: (k)multiTimeIntervalSequence
+        i: Index of the item to be removed
+    """
+
+    t_items = copy(sequence.items)
+    t_intervals = copy(sequence.intervals)
+
+    del t_items[i]
+
+    if i != 0:
+        del t_intervals[i-1]
+
+    for j in range(i-1, sequence.len-2):
+        del t_intervals[j][0]
+
+    t_sequence = multiTimeIntervalSequence(t_items, t_intervals)
+
+    return t_sequence
+
+
+def prune(sequence_list):
+    """ Returns the pruned list of (k)multiTimeIntervalSequence
+
+    Arguments:
+        sequence_list: List of (k)multiTimeIntervalSequence
+    """
+
+    pruned_sequence_list = []
+
+    for sequence in sequence_list:
+
+        for i in range(sequence.len)
+
+            t_sequence = sub_sequence(sequence, i)
+
+            if support(t_sequence, db) < min_sup :
+                continue
+
+            if i == sequence.len -1 :
+                pruned_sequence_list.append(sequence)
+
+
+    return pruned_sequence_list
+
+
 
 def run_apriori(db, time_intervals, max_sequence_length, min_sup):
     """Stub function to run the apriori algorithm. Returns the list of frequent
