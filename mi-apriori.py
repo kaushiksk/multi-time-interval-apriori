@@ -14,6 +14,7 @@ from interval import make_table
 from apriori_utils import joinC2, joinCk, contains, generate_one_itemsets
 from config import TIME_INTERVALS, MIN_SUP, DB
 
+import sys
 
 #time_interval_matrix = make_table(TIME_INTERVALS)
 #one_itemsets = generate_one_itemsets(DB, MIN_SUP)
@@ -52,3 +53,10 @@ class MultiTimeIntervalApriori:
     def run(k=4):
         print "Generating frequent 2-multi-time-iterval-sequences"
 
+
+if __name__=="__main__":
+
+	max_sequence_length = sys.argv[1]
+
+
+	frequent_sequences = run_apriori(DB, TIME_INTERVALS, max_sequence_length, MIN_SUP)
