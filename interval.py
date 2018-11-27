@@ -13,7 +13,7 @@ def get_interval(timestamp):
 	timestamp = abs(timestamp)
 
 	for interval in TIME_INTERVALS:
-		if timestamp > interval[0] and timestamp <= interval[1]:
+		if timestamp >= interval[0] and timestamp < interval[1]:
 			return interval
 
 def get_interval_index(interval):

@@ -6,8 +6,11 @@
 # Last Modified Date: 21.11.2018
 # Last Modified By  : Kaushik S Kalmady
 
-from copy import copy
+from copy import deepcopy as copy
+import logging
 from interval import get_interval, get_interval_index
+
+logging.basicConfig(level=logging.DEBUG)
 
 class multiTimeIntervalSequence:
     """A multi time interval sequence"""
@@ -16,6 +19,10 @@ class multiTimeIntervalSequence:
         self.items = items
         self.intervals = intervals
         self.length = len(items)
+
+    def display(self):
+        print(self.items)
+        print(self.intervals)
 
     def __eq__(self, other):
         """Equality operator overloading for Sequence class
@@ -92,12 +99,16 @@ def recursive_contains(known_tuples, unknown_items, transaction, sequence):
 
     item_tuples_with_idx = find_tuples_with_item(unknown_items[0], transaction)
 
+    # logging.debug("Item")
+    # logging.debug(unknown_items[0])
+    # logging.debug(item_tuples_with_idx)
+
     for item_tuple, idx in item_tuples_with_idx:
 
         if not passes_validity(item_tuple, known_tuples, sequence):
             continue
 
-        cur_known = known_tuples + item_tuple
+        cur_known = known_tuples + [item_tuple]
         if recursive_contains(cur_known, unknown_items[1:],
                               transaction[idx+1:], sequence):
             return True
@@ -120,7 +131,7 @@ def find_tuples_with_item(item, transaction):
 
 def passes_validity(item_tuple, known_tuples, sequence):
     """Returns True if item_tuple(item, timestamp) passes the time interval
-    validity , i.e the time difference between item and each other item in
+    validity , i.e the time difference between item and each item in
     known_tuples should belong to the same interval as specified in
     sequence.intervals
 
@@ -139,7 +150,8 @@ def passes_validity(item_tuple, known_tuples, sequence):
     for item, timestamp in known_tuples:
         item_idx = sequence.items.index(item)
         cur_interval = get_interval(cur_timestamp - timestamp)
-        if cur_interval != sequence.interval[cur_idx - 1][item_idx]:
+
+        if cur_interval != sequence.intervals[cur_idx - 1][item_idx]:
             return False
 
     return True
@@ -211,7 +223,6 @@ def joinCk(k1, k2, timeIntervalMatrix):
         if get_interval_index(interval) >= get_interval_index(intervals[-1][0]):
             t_intervals = copy(intervals)
             t_intervals[-1].insert(0, interval)
-
             list_of_sequences.append(multiTimeIntervalSequence(items, t_intervals))
 
     return list_of_sequences
@@ -237,57 +248,6 @@ def joinC2(one_itemsets, time_intervals):
                 list_of_sequences.append(multiTimeIntervalSequence(t_items, t_intervals))
 
     return list_of_sequences
-
-def sub_sequence(sequence, i):
-    """ Returns the (k-1)sub_sequence of the give (k)multiTimeIntervalSequence when 
-    the ith item and the corresponding time intervals are removed 
-
-    Arguments:
-        sequence: (k)multiTimeIntervalSequence
-        i: Index of the item to be removed
-    """
-
-    t_items = copy(sequence.items)
-    t_intervals = copy(sequence.intervals)
-
-    del t_items[i]
-
-    if i != 0:
-        del t_intervals[i-1]
-
-    for j in range(i-1, sequence.len-2):
-        del t_intervals[j][0]
-
-    t_sequence = multiTimeIntervalSequence(t_items, t_intervals)
-
-    return t_sequence
-
-
-def prune(sequence_list):
-    """ Returns the pruned list of (k)multiTimeIntervalSequence
-
-    Arguments:
-        sequence_list: List of (k)multiTimeIntervalSequence
-    """
-
-    pruned_sequence_list = []
-
-    for sequence in sequence_list:
-
-        for i in range(sequence.len)
-
-            t_sequence = sub_sequence(sequence, i)
-
-            if support(t_sequence, db) < min_sup :
-                continue
-
-            if i == sequence.len -1 :
-                pruned_sequence_list.append(sequence)
-
-
-    return pruned_sequence_list
-
-
 
 if __name__=="__main__":
     print "Done"
