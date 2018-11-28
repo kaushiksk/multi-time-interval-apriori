@@ -6,8 +6,11 @@
 # Last Modified Date: 21.11.2018
 # Last Modified By  : Kaushik S Kalmady
 
-from copy import copy
+from copy import deepcopy as copy
+import logging
 from interval import get_interval, get_interval_index
+
+logging.basicConfig(level=logging.DEBUG)
 
 class multiTimeIntervalSequence:
     """A multi time interval sequence"""
@@ -16,6 +19,10 @@ class multiTimeIntervalSequence:
         self.items = items
         self.intervals = intervals
         self.length = len(items)
+
+    def display(self):
+        print(self.items)
+        print(self.intervals)
 
     def __eq__(self, other):
         """Equality operator overloading for Sequence class
@@ -92,12 +99,16 @@ def recursive_contains(known_tuples, unknown_items, transaction, sequence):
 
     item_tuples_with_idx = find_tuples_with_item(unknown_items[0], transaction)
 
+    # logging.debug("Item")
+    # logging.debug(unknown_items[0])
+    # logging.debug(item_tuples_with_idx)
+
     for item_tuple, idx in item_tuples_with_idx:
 
         if not passes_validity(item_tuple, known_tuples, sequence):
             continue
 
-        cur_known = known_tuples + item_tuple
+        cur_known = known_tuples + [item_tuple]
         if recursive_contains(cur_known, unknown_items[1:],
                               transaction[idx+1:], sequence):
             return True
@@ -120,7 +131,7 @@ def find_tuples_with_item(item, transaction):
 
 def passes_validity(item_tuple, known_tuples, sequence):
     """Returns True if item_tuple(item, timestamp) passes the time interval
-    validity , i.e the time difference between item and each other item in
+    validity , i.e the time difference between item and each item in
     known_tuples should belong to the same interval as specified in
     sequence.intervals
 
@@ -134,12 +145,12 @@ def passes_validity(item_tuple, known_tuples, sequence):
 
     # Get index of current item in sequence. We need this to find it's
     # corresponding intervals
-    cur_idx = sequence.items.index(cur_item)
+    cur_idx = len(known_tuples)
 
-    for item, timestamp in known_tuples:
-        item_idx = sequence.items.index(item)
+    for idx, (item, timestamp) in enumerate(known_tuples):
         cur_interval = get_interval(cur_timestamp - timestamp)
-        if cur_interval != sequence.interval[cur_idx - 1][item_idx]:
+
+        if cur_interval != sequence.intervals[cur_idx - 1][idx]:
             return False
 
     return True
@@ -211,7 +222,6 @@ def joinCk(k1, k2, timeIntervalMatrix):
         if get_interval_index(interval) >= get_interval_index(intervals[-1][0]):
             t_intervals = copy(intervals)
             t_intervals[-1].insert(0, interval)
-
             list_of_sequences.append(multiTimeIntervalSequence(items, t_intervals))
 
     return list_of_sequences
@@ -237,7 +247,6 @@ def joinC2(one_itemsets, time_intervals):
                 list_of_sequences.append(multiTimeIntervalSequence(t_items, t_intervals))
 
     return list_of_sequences
-
 
 if __name__=="__main__":
     print "Done"
