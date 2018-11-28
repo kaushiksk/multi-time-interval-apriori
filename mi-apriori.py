@@ -44,16 +44,23 @@ class MultiTimeIntervalApriori:
             return self.__frequentSequences
         return self.__frequentSequences[k]
 
-    def support(self, sequence):
+    def support(self, sequence, verbose=False):
         """Returns support of multiTimeIntervalSequence sequence in db
         This is equal to number of rows containing sequence
         divided by total number of rows"""
         item_in_rows = 0.0
         num_rows = len(self.__db)
+        transactions = []
 
         for row in self.__db:
             if contains(row, sequence):
                 item_in_rows += 1
+                transactions.append(row)
+
+        if verbose:
+            print("The given sequence is present in the following transactions")
+            for idx, row in enumerate(transactions):
+                print("{0} : {1}".format(idx, row))
 
         return item_in_rows/num_rows
 
@@ -168,35 +175,71 @@ class MultiTimeIntervalApriori:
 
 if __name__=="__main__":
 
-    from apriori_utils import multiTimeIntervalSequence
-    
+    from apriori_utils import multiTimeIntervalSequence    
     m = MultiTimeIntervalApriori()
 
     def t(idx):
         return TIME_INTERVALS[idx]
 
+    def example1():
+        print("=======================================")
+        print("           RUNNING EXAMPLE 1           ")
+        print("  Check Support for example sequences  ")
+        I1 = ['b', 'e', 'c']
+        T1 = [[t(1)], [t(3), t(2)]]
+        seq1 = multiTimeIntervalSequence(I1, T1)
+        print("\nSequence 1")
+        seq1.display()
+        print("Support for Sequence 1 : {0}".format(m.support(seq1, verbose=True)))
+
+        print('\n')
+        I1 = ['a', 'c']
+        T1 = [[t(2)]]
+        seq1 = multiTimeIntervalSequence(I1, T1)
+        print("Sequence 2")
+        seq1.display()
+        print("Support for Sequence 2 : {0}".format(m.support(seq1, verbose=True)))
+        print("=======================================")
     
-    m.run_apriori(max_sequence_length=4, verbose=True)
+    def example2():
+        print("=======================================")
+        print("           RUNNING EXAMPLE 2           ")
+        print("  Join 2 sequences  ")
+        I1 = ['b', 'c', 'd']
+        T1 = [[t(1)], [t(1), t(1)]]
+        seq1 = multiTimeIntervalSequence(I1, T1)
+        print("Sequence 1")
+        seq1.display()
 
-    
+        print('\n')
+        I1 = ['c', 'd', 'e']
+        T1 = [[t(1)], [t(2), t(1)]]
+        seq2 = multiTimeIntervalSequence(I1, T1)
+        print("Sequence 2")
+        seq2.display()
 
+        print('\n')
+        timeIntervalMatrix = make_table(TIME_INTERVALS)
+        new_k_sequences = joinCk(seq1, seq2,timeIntervalMatrix)
+        print("Joined Sequence")
+        show(new_k_sequences)
+        print("=======================================")
 
-    print("Example 1")
-    I1 = ['b', 'e', 'c']
-    T1 = [[t(1)], [t(3), t(2)]]
-    print(T1)
-    seq1 = multiTimeIntervalSequence(I1, T1)
-    print("Support for Example 1 : {0}".format(m.support(seq1)))
+    def example3():
+        print("=======================================")
+        print("           RUNNING EXAMPLE 3           ")
+        print("   Running MI Apriori on sample data   ")
+        m.run_apriori(max_sequence_length=4, verbose=True)
+        print("=======================================")
 
-    print("Example 2")
-    I1 = ['a', 'c']
-    T1 = [[t(2)]]
-    seq1 = multiTimeIntervalSequence(I1, T1)
-    print("Support for Example 1 : {0}".format(m.support(seq1)))
-    """
-    I1 = ['b', 'e', 'c']
-    T1 = [[t(1)], [t(3), t(2)]]
-    #print(T1)
-    seq1 = multiTimeIntervalSequence(I1, T1)
-    print(contains(DB[0], seq1))
-    """
+    import argparse
+    parser = argparse.ArgumentParser(description="MI Apriori Algorithm")
+    parser.add_argument("--example", help="specify which example to run")
+    exid = int(vars(parser.parse_args())["example"])
+
+    if exid == 1:
+        example1()
+    elif exid == 2:
+        example2()
+    elif exid == 3:
+        example3()
