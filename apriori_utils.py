@@ -145,13 +145,12 @@ def passes_validity(item_tuple, known_tuples, sequence):
 
     # Get index of current item in sequence. We need this to find it's
     # corresponding intervals
-    cur_idx = sequence.items.index(cur_item)
+    cur_idx = len(known_tuples)
 
-    for item, timestamp in known_tuples:
-        item_idx = sequence.items.index(item)
+    for idx, (item, timestamp) in enumerate(known_tuples):
         cur_interval = get_interval(cur_timestamp - timestamp)
 
-        if cur_interval != sequence.intervals[cur_idx - 1][item_idx]:
+        if cur_interval != sequence.intervals[cur_idx - 1][idx]:
             return False
 
     return True

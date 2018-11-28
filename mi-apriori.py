@@ -175,8 +175,17 @@ class MultiTimeIntervalApriori:
 
 if __name__=="__main__":
 
+    import argparse
+    parser = argparse.ArgumentParser(description="MI Apriori Algorithm")
+    parser.add_argument("--example", help="specify which example to run", type=int)
+    parser.add_argument("--minsup", help="specify minimum support",
+                        nargs='?', const=MIN_SUP, type=float)
+    args = vars(parser.parse_args())
+    exid = args["example"]
+    min_sup = args["minsup"]
+
     from apriori_utils import multiTimeIntervalSequence    
-    m = MultiTimeIntervalApriori()
+    m = MultiTimeIntervalApriori(min_sup=min_sup)
 
     def t(idx):
         return TIME_INTERVALS[idx]
@@ -229,13 +238,8 @@ if __name__=="__main__":
         print("=======================================")
         print("           RUNNING EXAMPLE 3           ")
         print("   Running MI Apriori on sample data   ")
-        m.run_apriori(max_sequence_length=4, verbose=True)
+        m.run_apriori(max_sequence_length=6, verbose=True)
         print("=======================================")
-
-    import argparse
-    parser = argparse.ArgumentParser(description="MI Apriori Algorithm")
-    parser.add_argument("--example", help="specify which example to run")
-    exid = int(vars(parser.parse_args())["example"])
 
     if exid == 1:
         example1()
