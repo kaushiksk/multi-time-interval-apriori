@@ -6,6 +6,11 @@ This was implemented as part of the Data Warehousing and Data Mining course duri
 
 As of this writing it is the only known public implementation of the algorithm.
 
+# Running
+` $ python mi-apriori.py --example 1 --minsup 0.5`
+
+Execute `$ python mi-apriori.py -h` for help.
+
 ## Authors
     - Kaushik S Kalmady (@kaushiksk)
     - Siddharth V (@siddharthvdn)
