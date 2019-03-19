@@ -6,10 +6,19 @@ This was implemented as part of the Data Warehousing and Data Mining course duri
 
 As of this writing it is the only known public implementation of the algorithm.
 
-# Running
+# Running Examples
 ` $ python mi-apriori.py --example 1 --minsup 0.5`
 
-Execute `$ python mi-apriori.py -h` for help.
+You can change the example value to 1, 2, 3 and minsup to value between 0 and 1. Execute `$ python mi-apriori.py -h` for help.
+
+# Usage
+```python
+from config import DB, TIME_INTERVALS # default db and intervals, you can change these
+from mi-apriori import MultiTimeIntervalApriori
+
+m = MultiTimeIntervalApriori(db=DB, timeIntervals=TIME_INTERVALS, min_sup=MIN_SUP)
+m.run_apriori(max_sequence_length=6, verbose=True)
+```
 
 ## Authors
     - Kaushik S Kalmady (@kaushiksk)
